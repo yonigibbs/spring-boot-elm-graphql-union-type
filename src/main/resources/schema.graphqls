@@ -15,7 +15,7 @@ type Cat {
     size: Size
 }
 
-union Animal = Cat | Dog
+union Animal = Dog | Cat
 
 type Query {
     animals: [Animal!]!

@@ -20,8 +20,8 @@ import Json.Decode as Decode
 
 
 type alias Fragments decodesTo =
-    { onCat : SelectionSet decodesTo Api.Object.Cat
-    , onDog : SelectionSet decodesTo Api.Object.Dog
+    { onDog : SelectionSet decodesTo Api.Object.Dog
+    , onCat : SelectionSet decodesTo Api.Object.Cat
     }
 
 
@@ -32,8 +32,8 @@ fragments :
     -> SelectionSet decodesTo Api.Union.Animal
 fragments selections =
     Object.exhaustiveFragmentSelection
-        [ Object.buildFragment "Cat" selections.onCat
-        , Object.buildFragment "Dog" selections.onDog
+        [ Object.buildFragment "Dog" selections.onDog
+        , Object.buildFragment "Cat" selections.onCat
         ]
 
 
@@ -42,6 +42,6 @@ update syntax to add `SelectionSet`s for the types you want to handle.
 -}
 maybeFragments : Fragments (Maybe decodesTo)
 maybeFragments =
-    { onCat = Graphql.SelectionSet.empty |> Graphql.SelectionSet.map (\_ -> Nothing)
-    , onDog = Graphql.SelectionSet.empty |> Graphql.SelectionSet.map (\_ -> Nothing)
+    { onDog = Graphql.SelectionSet.empty |> Graphql.SelectionSet.map (\_ -> Nothing)
+    , onCat = Graphql.SelectionSet.empty |> Graphql.SelectionSet.map (\_ -> Nothing)
     }

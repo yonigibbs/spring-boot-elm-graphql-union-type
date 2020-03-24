@@ -10,7 +10,7 @@ import Api.Union.Animal
 import Browser
 import Graphql.Http
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
-import Html exposing (Html, button, div, h1, pre, text)
+import Html exposing (Html, button, div, h1, pre, span, text)
 import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
 import RemoteData exposing (RemoteData)
@@ -40,7 +40,7 @@ type alias Size =
     }
 
 
-{-| Client-side representation of data returned from GraphQL call when only the `id` property is requested. This is
+{-| Client-side representation of data returned from GraphQL call when only the `id` field is requested. This is
 non-nullable on both Dog and Cat.
 -}
 type SimpleAnimal
@@ -145,19 +145,19 @@ view model =
                 , pre [ style "background-color" "lightgray" ] [ text """  query {
     animals {
       __typename
-      ... on Cat {
-        id3905593358: id  <-- Same ID here...
-      }
       ... on Dog {
-        id3905593358: id  <-- ... and here
+        id3905593358: id    <-- Same ID here...
+      }
+      ... on Cat {
+        id3905593358: id    <-- ... and here
       }
     }
   }
 """ ]
                 ]
-            , text "The `id` property is given the same alias as it is exactly the same type for both Dog and Cat, namely a non-nullable string."
+            , text "The `id` field is given the same alias as it is exactly the same type for both Dog and Cat, namely a non-nullable string."
             ]
-        , -- Div with scalar-only data (like above, but with additional string "name" property, which is non-nullable on
+        , -- Div with scalar-only data (like above, but with additional string "name" field, which is non-nullable on
           -- Dog, but nullable on Cat).
           div []
             [ h1 [] [ text "Scalar Only Data" ]
@@ -167,21 +167,21 @@ view model =
                 , pre [ style "background-color" "lightgray" ] [ text """  query {
     animals {
       __typename
-      ... on Cat {
-        id3905593358: id
-        name12867311: name    <-- Different ID here...
-      }
       ... on Dog {
         id3905593358: id
-        name3832528868: name  <-- ... and here
+        name3832528868: name  <-- Different ID here...
+      }
+      ... on Cat {
+        id3905593358: id
+        name12867311: name    <-- ... and here
       }
     }
   }
 """ ]
                 ]
-            , text "The `name` property is given a different alias for Dog and Cat as it is a different type on each: nullable on one; non-nullable on the other."
+            , text "The `name` field is given a different alias for Dog and Cat as it is a different type on each: nullable on one; non-nullable on the other."
             ]
-        , -- Div with scalar-and-object data (like above, but with additional "size" property, whose value is an
+        , -- Div with scalar-and-object data (like above, but with additional "size" field, whose value is an
           -- object, and which is non-nullable on Dog, but nullable on Cat).
           div []
             [ h1 [] [ text "Scalar And Object Data" ]
@@ -191,17 +191,17 @@ view model =
                 , pre [ style "background-color" "lightgray" ] [ text """  query {
     animals {
       __typename
-      ... on Cat {
+      ... on Dog {
         id3905593358: id
-        name12867311: name
+        name3832528868: name
         size {                      <-- Same (unaliased) ID here...
           height1207450440: height
           weight1207450440: weight
         }
       }
-      ... on Dog {
+      ... on Cat {
         id3905593358: id
-        name3832528868: name
+        name12867311: name
         size {                      <-- ... and here
           height1207450440: height
           weight1207450440: weight
@@ -211,7 +211,7 @@ view model =
   }
 """ ]
                 ]
-            , text "The `size` property is given the same ID (with no alias) even though the type is different on Dog and Cat: nullable on one; non-nullable on the other."
+            , text "The `size` field is given the same ID (with no alias) even though the type is different on Dog and Cat: nullable on one; non-nullable on the other."
             ]
         ]
 
@@ -222,7 +222,7 @@ dataView animalData loadRequestedMsg =
         ( description, colour ) =
             case animalData of
                 RemoteData.NotAsked ->
-                    ( "Not asked", "gray" )
+                    ( "", "" )
 
                 RemoteData.Loading ->
                     ( "Loading", "gray" )
@@ -234,8 +234,10 @@ dataView animalData loadRequestedMsg =
                     ( "Success", "green" )
     in
     div []
-        [ div [ style "color" colour ] [ text description ]
-        , div [] [ button [ onClick loadRequestedMsg ] [ text "Load" ] ]
+        [ div []
+            [ button [ onClick loadRequestedMsg ] [ text "Load" ]
+            , span [ style "color" colour, style "font-size" "150%", style "font-weight" "bold" ] [ text description ]
+            ]
         ]
 
 
