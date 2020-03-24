@@ -1,0 +1,22 @@
+type Size {
+    height: Int!
+    weight: Int!
+}
+
+type Dog {
+    id: ID!
+    name: String!
+    size: Size!
+}
+
+type Cat {
+    id: ID!
+    name: String
+    size: Size
+}
+
+union Animal = Cat | Dog
+
+type Query {
+    animals: [Animal!]!
+}
